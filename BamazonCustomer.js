@@ -117,12 +117,33 @@ connection.query('SELECT * FROM Products', function(err, res){
               var buyItemPrice = res[0].Price;
               customerTotal = buyItemQuantity*buyItemPrice.toFixed(2);
 
-              console.log('\nYour total is $' + customerTotal + '. Thank you!');
-              
-              connection.end(); // end the script/connection
-            }); // end customer price query
+              console.log('\nYour total is $' + customerTotal + '.');
 
+              // ------------------------- Re factor for Executive Challenge ------------------------
+              // Find the department for the purchase item
+              connection.query('SELECT DepartmentName FROM Products WHERE ?', [{ItemID: buyItemID}], function(err, res){
+                var itemDepartment = res[0].DepartmentName;
+                
+                // Find the current Revenue for that department
+                connection.query('SELECT TotalSales FROM Departments WHERE ?', [{DepartmentName: itemDepartment}], function(err, res){
+                  var totalSales = res[0].TotalSales;
 
+                  // Calculate new sale revenue
+                  var totalSales = parseFloat(totalSales) + parseFloat(customerTotal);
+
+                  // Add the revenue from each transaction to the TotalSales column for the related department.
+                  connection.query('UPDATE Departments SET ? WHERE ?', [{TotalSales: totalSales}, {DepartmentName: itemDepartment}], function(err, res){
+                    if(err) throw err; // Error Handler
+                    console.log('Transaction Completed. Thank you!')
+                    connection.end(); // end the script/connection
+
+                  }); // end new revenue update query
+      
+                }); // end current revenue query
+
+              }); // end department name query 
+              // -------------------------------------------------------------------------------------
+            }); // end customer purchase update query 
           }
           // Insufficient inventory
           else{

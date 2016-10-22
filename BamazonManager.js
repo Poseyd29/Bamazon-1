@@ -221,7 +221,7 @@ function addInventory(){
               connection.query('UPDATE Products SET ? WHERE ?', [{StockQuantity: newInventory}, {ItemID: restockItemID}], function(err, res){
                 if(err) throw err; // Error Handler
 
-                console.log('\nInventory updated successfully!')
+                console.log('\nInventory updated successfully! How customer-centric!') // Inside jokes for days!
                 connection.end(); // end the script/connection
 
               }); // end inventory update query
