@@ -91,7 +91,7 @@ connection.query('SELECT * FROM Products', function(err, res){
 
       // Once the customer has placed the order, check if store has enough of the product to meet the request
       connection.query('SELECT StockQuantity FROM Products WHERE ?', [{ItemID: buyItemID}], function(err, res){
-        
+        if(err) throw err; // Error Handler
         // Check if the item Id was valid (i.e. something was returned from mySQL)
         if(res[0] == undefined){
           console.log('Sorry... We found no items with Item ID "' +  buyItemID + '"');
@@ -126,7 +126,7 @@ connection.query('SELECT * FROM Products', function(err, res){
           }
           // Insufficient inventory
           else{
-            console.log('Sorry... We only have ' +  bamazonQuantity + ' of those items.');
+            console.log('Sorry... We only have ' +  bamazonQuantity + ' of those items. Order cancelled.');
             connection.end(); // end the script/connection
           }
         }

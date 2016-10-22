@@ -25,66 +25,67 @@ var connection = mysql.createConnection({
 
 // Connect to Database
 connection.connect(function(err) {
-    if (err) throw err;
-    console.log("connected as id " + connection.threadId);
-});
+  if (err) throw err;
+  console.log("connected as id " + connection.threadId);
 
+  // ------------------------------ Nest Switch Case into here (to be shown after connected) -------------------------------
+  // Prompt user with options (note I could have used inquier to make a list, but the assignment seemed to prefer prompt)
+  prompt.start();
 
-// Prompt user with options (note I could have used inquier to make a list, but the assignment seemed to prefer prompt)
-prompt.start();
+  // Display Menu
+  console.log('\nBamazon Shift Manager Menu'); // <---- Oh the irony! The sweet, sweet irony! DM to know why :)
+  console.log('----------------------------')
+  console.log('Select a (numeric) option.')
+  console.log('1. View Products for Sale');
+  console.log('2. View Low Inventory');
+  console.log('3. Add to Inventory');
+  console.log('4. Add New Product');
 
-// Display Menu
-console.log('Bamazon Shift Manager Menu'); // <---- Oh the irony! The sweet, sweet irony! DM to know why :)
-console.log('1. View Products for Sale');
-console.log('2. View Low Inventory');
-console.log('3. Add to Inventory');
-console.log('4. Add New Product');
-
-console.log('\nSelect a (numeric) option...')
-prompt.get(['menuSelection'], function (err, result) {
-  
-  // Switch Case for different options
-  var menuSelection = parseInt(result.menuSelection);
-
-  switch(menuSelection) {
-    case 1:
-        console.log('\nView Products for Sale.');
-        viewProducts('',function(){}); // note that this function uses a callback :)
-        connection.end(); // end the script/connection
-        break;
+  prompt.get(['menuSelection'], function (err, result) {
     
-    case 2:
-        console.log('\nView Low Inventory.');
-        viewLowInventory();
-        connection.end(); // end the script/connection
+    // Switch Case for different options
+    var menuSelection = parseInt(result.menuSelection);
+
+    switch(menuSelection) {
+      case 1:
+          console.log('\nView Products for Sale...');
+          viewProducts(function(){}); // note that this function uses a callback :)
+          connection.end(); // end the script/connection
+          break;
+      
+      case 2:
+          console.log('\nView Low Inventory...');
+          viewLowInventory();
+          connection.end(); // end the script/connection
+          break;
+      
+      case 3:
+        console.log('\nAdd to Inventory...');
+        addInventory();
         break;
+
+      case 4:
+        console.log('\nAdd New Product...');
+        addNewProduct();
+        break;
+
+      default:
+        console.log('Not a vaild entry. Aborting.');
+        connection.end(); // end the script/connection
+
+    } // end switch case
     
-    case 3:
-      console.log('\nAdd to Inventory.');
-      addInventory();
-      connection.end(); // end the script/connection
-      break;
+  }); // end switch case prompt
 
-    case 4:
-      console.log('\nAdd New Product.');
-      break;
-
-    default:
-      console.log('Not a vaild entry.');
-      connection.end(); // end the script/connection
-
-  } // end switch case
-  
-
-});
+}); // end connection
 
 
 
-// =================== Functions to be used in the switch case ===================
+// =================== Functions to be used inside the switch case ===================
 
 
 // View Products for sale (complete with a callback function)
-function viewProducts(x, callback){
+function viewProducts(callback){
 
   // Display All Items inside Database
   connection.query('SELECT * FROM Products', function(err, res){
@@ -178,7 +179,7 @@ function viewLowInventory(){
 function addInventory(){
   
   // Running the View Products Function (case 1) and then asking user for unput after callback
-  viewProducts('',function(){
+  viewProducts(function(){
 
     // Prompt user for re-stock item
     prompt.start();
@@ -193,36 +194,45 @@ function addInventory(){
       console.log('\nHow many items will you restock?');
       prompt.get(['restockCount'], function(err, result){
         
-        //S how Restock Count selected
-        var restockCount = parseInt(result.restockCount);
+        //Show Restock Count selected
+        var restockCount = result.restockCount;
         console.log('You selected to re-stock ' + restockCount + ' items.');
+        restockCount = parseInt(restockCount); // convert to integer
 
-        // Test for integer
         if(Number.isInteger(restockCount)){
 
           // Query for current item inventory
-          connection.query('SELECT StockQuantity FROM Products WHERE ?', [{: restockItemID}], function(err, res){
-            console.log('BROOOOOOOOOOOOKKKKKKEEEEEENNNNNNNN HERE!!!!!!!!!!!' + res)
+          connection.query('SELECT StockQuantity FROM Products WHERE ?', [{ItemID: restockItemID}], function(err, res){
+
             // Check if the item Id was valid (i.e. something was returned from mySQL)
             if(res[0] == undefined){
+              
               console.log('Sorry... We found no items with Item ID "' +  restockItemID + '"');
               connection.end(); // end the script/connection
+
             }
             // Valid Item ID, so add Bamazon Inventory with stowing quantity <-- more Bamazon lingo ;)
             else{
+              
               var bamazonQuantity = res[0].StockQuantity;
               var newInventory = parseInt(bamazonQuantity) + parseInt(restockCount); // ensure integers
 
               // Update Database with new items
               connection.query('UPDATE Products SET ? WHERE ?', [{StockQuantity: newInventory}, {ItemID: restockItemID}], function(err, res){
                 if(err) throw err; // Error Handler
+
+                console.log('\nInventory updated successfully!')
+                connection.end(); // end the script/connection
+
               }); // end inventory update query
+            
             }
 
           }); // end current quantity query
         }
         else{
           console.log('Only whole items can be added. Integers only!')
+          connection.end(); // end the script/connection
         }
 
       }); // end prompt 2 (amount to add)
@@ -231,4 +241,45 @@ function addInventory(){
 
   }); // end case 1 callback
 
+}
+
+
+// ---------------------------------------------------------------------------------
+
+// Add New Product
+function addNewProduct(){
+
+  // Prompt user for new item details
+  prompt.start();
+  console.log('\nComplete the new product details:');
+  prompt.get(['ProductName', 'DepartmentName', 'Price', 'Quantity'], function (err, result) {
+
+    // Collect/parse variables
+    var productName = result.ProductName;
+    var departmentName = result.DepartmentName;
+    var price = result.Price;
+    var quantity = result.Quantity;
+
+    // Update Database
+    connection.query('INSERT INTO Products SET ?', {
+      ProductName: productName,
+      DepartmentName: departmentName,
+      Price: price,
+      StockQuantity: quantity
+    }, function(err, res){
+
+      // Slighly more refined Error Handler
+      if(err){
+        console.log('\nSorry. The SQL database could not be updated.\n' +
+          'Please ensure you entered the price and quantity as numbers!');
+        connection.end(); // end the script/connection
+      }
+      else{
+        console.log('\nInventory updated successfully!')
+        connection.end(); // end the script/connection
+      }
+
+    });
+
+  });
 }
