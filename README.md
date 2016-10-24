@@ -31,6 +31,7 @@ The JavaScript files mentioned above query a MySQL database called `Bamazon` whi
 - Please refer to the `mySQLcommands.sql` file to see how the database was created using raw SQL queries.
 
   - If you wish to run this app on your own machine, then please note the following commands:
+  
     1. If you are new to MySQL, please set up [MySQL](http://dev.mysql.com/downloads/mysql/) and [MySQL Workbench](http://dev.mysql.com/downloads/workbench/) on your laptop and then open up to your localhost connection.
     2. Run `CREATE DATABASE Bamazon;` in mySQL Workbench.
     3. Be sure to select the correct database by running the `USE Bamazon;` 
