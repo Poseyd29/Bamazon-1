@@ -35,8 +35,8 @@ The JavaScript files mentioned above query a MySQL database called `Bamazon` whi
     1. If you are new to MySQL, please set up [MySQL](http://dev.mysql.com/downloads/mysql/) and [MySQL Workbench](http://dev.mysql.com/downloads/workbench/) on your laptop and then open up to your localhost connection.
     2. Run `CREATE DATABASE Bamazon;` in mySQL Workbench.
     3. Be sure to select the correct database by running the `USE Bamazon;` 
-    4. Refer to the raw SQL commands under the `_=== First Table ===_` comment to set up the `Products` table.
-    5. Refer to the raw SQL commands under the `_=== Second Table ===_` comment to set up the `Departments` table.
+    4. Refer to the raw SQL commands under the _`=== First Table ===`_ comment to set up the `Products` table.
+    5. Refer to the raw SQL commands under the _`=== Second Table ===`_ comment to set up the `Departments` table.
 
 
 ### Node Package Manager (npm)
@@ -61,7 +61,7 @@ Below are some screenshots that show the functionality of the app.
 
 <a name="manager"></a>
 - Below is a demo of the `BamazonManager.js` file...
-  - Running `node BamazonManager.js` will display a menu and peform the specific requests.
+  - Running `node BamazonManager.js` will display a menu and perform the specific requests.
     ![Manager Menu](/example_images/BamazonManager-0.png)
     - The manager can choose option `1` to view the current inventory.
       ![Manager 1](/example_images/BamazonManager-1.png)
@@ -77,7 +77,7 @@ Below are some screenshots that show the functionality of the app.
 
 <a name="executive"></a>
 - Below is a demo of the `BamazonExecutive.js` file...
-  - Running `node BamazonExecutive.js` will display a menu and peform the specific requests.
+  - Running `node BamazonExecutive.js` will display a menu and perform the specific requests.
     ![Executive Menu](/example_images/BamazonExecutive-0.png)
     - The executive can choose option `1` to view the sales by department.
       ![Executive 1](/example_images/BamazonExecutive-1.png)

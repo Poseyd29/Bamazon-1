@@ -33,7 +33,7 @@ connection.connect(function(err) {
   prompt.start();
 
   // Display Menu
-  console.log('\nBamazon Shift Manager Menu'); // <---- Oh the irony! The sweet, sweet irony! DM to know why :)
+  console.log('\nBamazon Shift Manager Menu'); // <---- Oh the irony! The sweet, sweet irony!
   console.log('----------------------------')
   console.log('Select a (numeric) option.')
   console.log('1. View Products for Sale');
