@@ -28,7 +28,7 @@ Three JavaScript files replicate the basics of a simple ecommerce engine:
 ### MySQL
 The JavaScript files mentioned above query a MySQL database called `Bamazon` which is locally hosted on my laptop.
 
-- Please refer to the `mySQLcommands.sql` file to see how the database was created using raw SQL queries.
+- Please refer to the `schema.sql` file to see how the database was created using raw SQL queries.
 
   - If you wish to run this app on your own machine, then please note the following commands:
 
